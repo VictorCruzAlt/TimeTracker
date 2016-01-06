@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">TimeTracker</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="clica">clica per començar</string>
-
+    <string name="one">Projectes</string>
+    <string name="two">Tasques</string>
 </resources>

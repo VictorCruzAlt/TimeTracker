@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="paginaweb">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/libs/paginaweb.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

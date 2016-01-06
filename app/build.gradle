@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "timetracker.iuandroid"
-        minSdkVersion 17
+        minSdkVersion 21
         targetSdkVersion 23
     }
 
@@ -20,6 +20,7 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:+'
     compile files('libs/html-gen.jar')
     compile files('libs/log4j-1.2.16.jar')
     compile files('libs/nucli.jar')
