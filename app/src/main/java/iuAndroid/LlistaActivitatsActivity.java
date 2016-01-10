@@ -4,20 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timetracker.iuandroid.R;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.design.widget.TabLayout;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ArrayAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.widget.ListView;
+import android.view.Menu;
 
 /**
  * Mostra la llista de projectes i tasques filles del projecte pare actual.
@@ -60,7 +66,16 @@ import android.widget.ListView;
  * @author joans
  * @version 6 febrer 2012
  */
-public class LlistaActivitatsActivity extends Activity {
+public class LlistaActivitatsActivity extends AppCompatActivity {
+
+    private Toolbar toolbar;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private Integer[] imgid={
+            R.drawable.ic_list_grey600_48dp,
+            R.drawable.ic_whatshot_grey600_48dp,
+            R.drawable.ic_keyboard_arrow_right_grey600_48dp
+    };
 
     /**
      * Nom de la classe per fer aparèixer als missatges de logging del LogCat.
@@ -84,13 +99,13 @@ public class LlistaActivitatsActivity extends Activity {
      * tingui un mètode <code>toString</code> que retornarà l'string a mostrar
      * en els TextView (controls de text) de la llista ListView.
      */
-    private ArrayAdapter<DadesActivitat> aaAct;
+    private ActivityListAdapter aaAct;
 
     /**
      * Llista de dades de les activitats (projectes i tasques) mostrades
      * actualment, filles del (sub)projecte on estem posicionats actualment.
      */
-    private List<DadesActivitat> llistaDadesActivitats;
+    private ArrayList<DadesActivitat> llistaDadesActivitats;
 
     /**
      * Identificador del View les propietats del qual (establertes amb l'editor
@@ -297,13 +312,23 @@ public class LlistaActivitatsActivity extends Activity {
     public final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(tag, "onCreate");
-
         setContentView(R.layout.main);
+
+        toolbar = (Toolbar) findViewById(R.id.action_bar_activity_main);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
         arrelListView = (ListView) this.findViewById(R.id.listView1);
 
         llistaDadesActivitats = new ArrayList<DadesActivitat>();
-        aaAct = new ArrayAdapter<DadesActivitat>(this, layoutID,
-                llistaDadesActivitats);
+        aaAct = new ActivityListAdapter(this,llistaDadesActivitats,imgid);
         arrelListView.setAdapter(aaAct);
 
         // Un click serveix per navegar per l'arbre de projectes, tasques
@@ -494,6 +519,49 @@ public class LlistaActivitatsActivity extends Activity {
         Log.i(tag, "onConfigurationChanged");
         if (Log.isLoggable(tag, Log.VERBOSE)) {
             Log.v(tag, newConfig.toString());
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new OneFragment(), "Projectes");
+        adapter.addFragment(new TwoFragment(), "Tasques");
+        viewPager.setAdapter(adapter);
+    }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
         }
     }
 
