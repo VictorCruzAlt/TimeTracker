@@ -6,4 +6,13 @@
     <string name="clica">clica per començar</string>
     <string name="one">Projectes</string>
     <string name="two">Tasques</string>
+    <string name="action_intervals">Intervals</string>
+    <string name="action_details">Details</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_report">Reports</string>
+    <string name="no_activities">No activities here. Tap + to add new projects or tasks</string>
+    <string name="action_all">All activities</string>
+    <string name="delete_message">Are you sure?</string>
+    <string name="delete_title">Deleting...</string>
+    <string name="start">Start</string>
 </resources>

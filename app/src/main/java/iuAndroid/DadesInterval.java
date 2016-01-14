@@ -1,7 +1,9 @@
 package iuAndroid;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import nucli.Interval;
@@ -45,6 +47,9 @@ public class DadesInterval implements Serializable {
      * @see Interval
      */
     private long durada;
+
+    public ArrayList Intervals;
+
 
     /**
      * Extreu les dades de l'interval passat per paràmetre i les copia als
@@ -95,7 +100,9 @@ public class DadesInterval implements Serializable {
                 - segonsPerMinut * minuts);
         // String strdurada = Long.toString(durada);
         String strdurada = hores + "h " + minuts + "m " + segons + "s";
-        return strdi + "-->" + strdf + " = " + strdurada;
+
+
+        return strdi + " to " + strdf + " TOTAL: " + strdurada;
     }
 
     // Getters

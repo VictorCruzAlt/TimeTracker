@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spinnerItems">
+        <item>Project</item>
+        <item>Task</item>
+    </string-array>
+    <string-array name="spinnerItems2">
+        <item>Last day</item>
+        <item>Last week</item>
+        <item>Last month</item>
+        <item>Others</item>
+    </string-array>
+    <string-array name="spinnerItems3">
+        <item>WEB format</item>
+        <item>Plain text</item>
+    </string-array>
+</resources>

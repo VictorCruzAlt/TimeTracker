@@ -1,9 +1,5 @@
 package iuAndroid;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import timetracker.iuandroid.R;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,6 +10,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import timetracker.iuandroid.R;
 
 /**
  * Mostra la llista d'intervals d'alguna tasca. De cada interval mostra les
@@ -147,12 +148,12 @@ public class LlistaIntervalsActivity extends Activity {
          */
         @Override
         public final void onReceive(final Context context,
-                final Intent intent) {
+                                    final Intent intent) {
             Log.d(tag, "onReceive Receptor LlistaIntervals");
             if (intent.getAction().equals(GestorArbreActivitats.TE_FILLS)) {
                 ArrayList<DadesInterval> llistaDadesInter =
                         (ArrayList<DadesInterval>) intent
-                        .getSerializableExtra("llista_dades_intervals");
+                                .getSerializableExtra("llista_dades_intervals");
                 aaAct.clear();
                 for (DadesInterval dadesInter : llistaDadesInter) {
                     aaAct.add(dadesInter);

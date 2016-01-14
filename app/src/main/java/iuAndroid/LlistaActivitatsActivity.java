@@ -4,26 +4,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timetracker.iuandroid.R;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.support.v4.view.ViewPager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.view.Menu;
+import android.support.v4.view.ViewPager;
 
 /**
  * Mostra la llista de projectes i tasques filles del projecte pare actual.
@@ -68,15 +76,11 @@ import android.view.Menu;
  */
 public class LlistaActivitatsActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
     private Integer[] imgid={
             R.drawable.ic_list_grey600_48dp,
             R.drawable.ic_whatshot_grey600_48dp,
             R.drawable.ic_keyboard_arrow_right_grey600_48dp
     };
-
     /**
      * Nom de la classe per fer aparèixer als missatges de logging del LogCat.
      *
@@ -99,25 +103,29 @@ public class LlistaActivitatsActivity extends AppCompatActivity {
      * tingui un mètode <code>toString</code> que retornarà l'string a mostrar
      * en els TextView (controls de text) de la llista ListView.
      */
-    private ActivityListAdapter aaAct;
+    private static ArrayAdapter<DadesActivitat> aaAct;
+    private static ArrayAdapter<DadesActivitat> aaActT;
 
+    public static ArrayAdapter getProjectAdapter(){ return aaAct;}
+    public static ArrayAdapter getTasksAdapter(){ return aaActT;}
     /**
      * Llista de dades de les activitats (projectes i tasques) mostrades
      * actualment, filles del (sub)projecte on estem posicionats actualment.
      */
-    private ArrayList<DadesActivitat> llistaDadesActivitats;
+    public static ArrayList<DadesActivitat> llistaDadesTasks;
+    public static ArrayList<DadesActivitat> llistaDadesProjectes;
 
     /**
      * Identificador del View les propietats del qual (establertes amb l'editor
      * XML de la interfase gràfica) estableixen com es mostra cada un els items
-     * o elements de la llista d'activitats (tasques i projectes) referenciada
+     * o elements de la llista d'activitats (tasqudes i projectes) referenciada
      * per l'adaptador {@link #aaAct}. Si per comptes haguéssim posat
      * <code>android.R.layout.simple_list_item_1</code> llavors fora la
      * visualització per defecte d'un text. Ara la diferència es la mida de la
      * tipografia.
      */
     private int layoutID = R.layout.textview_llista_activitats;
-
+    private int layoutIDt = R.layout.textview_llista_intervals;
     /**
      * Flag que ens servirà per decidir fer que si premem el botó/tecla "back"
      * quan estem a l'arrel de l'arbre de projectes, tasques i intervals : si és
@@ -167,13 +175,29 @@ public class LlistaActivitatsActivity extends AppCompatActivity {
                 @SuppressWarnings("unchecked")
                 ArrayList<DadesActivitat> llistaDadesAct =
                         (ArrayList<DadesActivitat>) intent
-                        .getSerializableExtra("llista_dades_activitats");
+                                .getSerializableExtra("llista_dades_activitats");
+                ArrayList<DadesActivitat> llistaDadesProjectes =
+                        new ArrayList<DadesActivitat>();
+                ArrayList<DadesActivitat> llistaDadesTasks =
+                        new ArrayList<DadesActivitat>();
                 aaAct.clear();
+                aaActT.clear();
                 for (DadesActivitat dadesAct : llistaDadesAct) {
-                    aaAct.add(dadesAct);
+
+                    if(dadesAct.isProjecte()){
+                        llistaDadesProjectes.add(dadesAct);
+                        aaAct.add(dadesAct);
+                    }else {
+                        llistaDadesTasks.add(dadesAct);
+                        aaActT.add(dadesAct);
+
+                    }
                 }
+
+
                 // això farà redibuixar el ListView
                 aaAct.notifyDataSetChanged();
+                aaActT.notifyDataSetChanged();
                 Log.d(tag, "mostro els fills actualitzats");
             } else {
                 // no pot ser
@@ -295,6 +319,9 @@ public class LlistaActivitatsActivity extends AppCompatActivity {
         super.onPause();
     }
 
+    private Toolbar toolbar;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
     /**
      * Estableix com a activitats a visualitzar les filles del projecte
      * {@link #projecteArrel}, així com els dos listeners que gestionen els
@@ -314,6 +341,7 @@ public class LlistaActivitatsActivity extends AppCompatActivity {
         Log.i(tag, "onCreate");
         setContentView(R.layout.main);
 
+
         toolbar = (Toolbar) findViewById(R.id.action_bar_activity_main);
         setSupportActionBar(toolbar);
 
@@ -325,17 +353,34 @@ public class LlistaActivitatsActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+
         arrelListView = (ListView) this.findViewById(R.id.listView1);
 
-        llistaDadesActivitats = new ArrayList<DadesActivitat>();
-        aaAct = new ActivityListAdapter(this,llistaDadesActivitats,imgid);
-        arrelListView.setAdapter(aaAct);
+        llistaDadesProjectes = new ArrayList<DadesActivitat>();
+        aaAct = new ActivityListAdapter(this, layoutID,llistaDadesProjectes,imgid);
+
+
+        llistaDadesTasks = new ArrayList<DadesActivitat>();
+        aaActT = new ActivityListAdapter(this,layoutID,llistaDadesTasks,imgid);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(LlistaActivitatsActivity.this, OnCreateActivity.class);
+                startActivity(intent);
+                //setContentView(R.layout.createactivity);
+            }
+        });
+
 
         // Un click serveix per navegar per l'arbre de projectes, tasques
         // i intervals. Un long click es per cronometrar una tasca, si és que
         // l'item clicat es una tasca (sinó, no es fa res).
 
-        arrelListView.setOnItemClickListener(new OnItemClickListener() {
+        /*arrelListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(final AdapterView<?> arg0, final View arg1,
                     final int pos, final long id) {
@@ -402,8 +447,44 @@ public class LlistaActivitatsActivity extends AppCompatActivity {
                 // ordenar el cronometrat passem a veure la llista d'intervals.
                 return true;
             }
-        });
+        });*/
 
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new OneFragment(), "Projectes");
+        adapter.addFragment(new TwoFragment(), "Tasques");
+        viewPager.setAdapter(adapter);
+    }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 
     /**
@@ -453,6 +534,7 @@ public class LlistaActivitatsActivity extends AppCompatActivity {
      * apaisat o al revés.
      *
      * @param savedInstanceState
+     *
      *            Bundle que de fet no es fa servir.
      *
      * @see onConfigurationChanged
@@ -524,45 +606,65 @@ public class LlistaActivitatsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
         return true;
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new OneFragment(), "Projectes");
-        adapter.addFragment(new TwoFragment(), "Tasques");
-        viewPager.setAdapter(adapter);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+
+        switch (item.getItemId()) {
+            case R.id.action_all:
+
+                return true;
+            case R.id.action_delete:
+                AlertDialog diaBox = AskOption();
+                diaBox.show();
+                return true;
+            case R.id.action_intervals:
+
+                return true;
+			/*case R.id.action_details:
+
+				return true;
+			case R.id.action_intervals:
+
+				return true;*/
+            case R.id.action_report:
+                Intent intent_r = new Intent(LlistaActivitatsActivity.this, OnCreateReport.class);
+                startActivity(intent_r);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
+    private AlertDialog AskOption()
+    {
+        AlertDialog myQuittingDialogBox =new AlertDialog.Builder(this)
+                .setTitle("Delete")
+                .setMessage("Do you want to Delete?")
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
 
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        //your deleting code
+                        dialog.dismiss();
+                    }
 
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
+                })
 
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
 
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
+                        dialog.dismiss();
 
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
+                    }
+                })
+                .create();
+        return myQuittingDialogBox;
+
     }
 
 }

@@ -1,10 +1,13 @@
 <resources>
     <color name="primary">#4B4A68</color>
     <color name="primary_transp">#B34B4A68</color>
+    <color name="tab_unselected">#9E9E9E</color>
     <color name="primary_dark">#373658</color>
     <color name="accent">#ffc400</color>
     <color name="text_primary">#fff</color>
     <color name="text_secondary">#fff</color>
+    <color name="soft">#727489</color>
+    <color name="add_button">#EF6C00</color>
 
     <!-- Base application theme. -->
     <style name="AppTheme2" parent="@style/Theme.AppCompat.Light.DarkActionBar">
