@@ -3,7 +3,6 @@ package iuAndroid;
 import timetracker.iuandroid.R;
 
 import android.app.AlertDialog;
-import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,25 +11,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.support.design.widget.TabLayout;
-import android.support.v7.widget.Toolbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v4.view.ViewPager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.view.WindowManager;
 
 
 public class MainActivity extends AppCompatActivity {
-
-	private Toolbar toolbar;
-	private TabLayout tabLayout;
-	private ViewPager viewPager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
 				Intent intent = new Intent(MainActivity.this, LlistaActivitatsActivity.class);
 				startActivity(intent);
-				//setContentView(R.layout.createactivity);
 			}
 		});
-
+		setStatusBarTranslucent(true);
 	}
 
 	@Override
@@ -84,12 +68,6 @@ public class MainActivity extends AppCompatActivity {
 				intentt.putExtra("task",ma);
 				startActivity(intentt);
 				return true;
-			/*case R.id.action_details:
-
-				return true;
-			case R.id.action_intervals:
-
-				return true;*/
 			case R.id.action_report:
 				Intent intent_r = new Intent(MainActivity.this, OnCreateReport.class);
 				startActivity(intent_r);
@@ -132,40 +110,11 @@ public class MainActivity extends AppCompatActivity {
 		return true;
 	}
 
-
-	private void setupViewPager(ViewPager viewPager) {
-		ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-		adapter.addFragment(new OneFragment(), "Projectes");
-		adapter.addFragment(new TwoFragment(), "Tasques");
-		viewPager.setAdapter(adapter);
-	}
-
-	class ViewPagerAdapter extends FragmentPagerAdapter {
-		private final List<Fragment> mFragmentList = new ArrayList<>();
-		private final List<String> mFragmentTitleList = new ArrayList<>();
-
-		public ViewPagerAdapter(FragmentManager manager) {
-			super(manager);
-		}
-
-		@Override
-		public Fragment getItem(int position) {
-			return mFragmentList.get(position);
-		}
-
-		@Override
-		public int getCount() {
-			return mFragmentList.size();
-		}
-
-		public void addFragment(Fragment fragment, String title) {
-			mFragmentList.add(fragment);
-			mFragmentTitleList.add(title);
-		}
-
-		@Override
-		public CharSequence getPageTitle(int position) {
-			return mFragmentTitleList.get(position);
+	protected void setStatusBarTranslucent(boolean makeTranslucent) {
+		if (makeTranslucent) {
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+		} else {
+			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 		}
 	}
 

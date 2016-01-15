@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timetracker.iuandroid.R;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,12 +25,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.support.v4.view.ViewPager;
 
 /**
  * Mostra la llista de projectes i tasques filles del projecte pare actual.
@@ -77,8 +72,8 @@ import android.support.v4.view.ViewPager;
 public class LlistaActivitatsActivity extends AppCompatActivity {
 
     private Integer[] imgid={
+            R.drawable.ic_filter_list_grey600_48dp,
             R.drawable.ic_list_grey600_48dp,
-            R.drawable.ic_whatshot_grey600_48dp,
             R.drawable.ic_keyboard_arrow_right_grey600_48dp
     };
     /**
@@ -363,98 +358,21 @@ public class LlistaActivitatsActivity extends AppCompatActivity {
         llistaDadesTasks = new ArrayList<DadesActivitat>();
         aaActT = new ActivityListAdapter(this,layoutID,llistaDadesTasks,imgid);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-
+        FloatingActionButton addActivity = (FloatingActionButton) findViewById(R.id.add_activity);
+        addActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Intent intent = new Intent(LlistaActivitatsActivity.this, OnCreateActivity.class);
                 startActivity(intent);
-                //setContentView(R.layout.createactivity);
             }
         });
-
-
-        // Un click serveix per navegar per l'arbre de projectes, tasques
-        // i intervals. Un long click es per cronometrar una tasca, si és que
-        // l'item clicat es una tasca (sinó, no es fa res).
-
-        /*arrelListView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(final AdapterView<?> arg0, final View arg1,
-                    final int pos, final long id) {
-                Log.i(tag, "onItemClick");
-                Log.d(tag, "pos = " + pos + ", id = " + id);
-
-                Intent inte = new Intent(LlistaActivitatsActivity.BAIXA_NIVELL);
-                inte.putExtra("posicio", pos);
-                sendBroadcast(inte);
-                if (llistaDadesActivitats.get(pos).isProjecte()) {
-                    sendBroadcast(new Intent(
-                            LlistaActivitatsActivity.DONAM_FILLS));
-                    Log.d(tag, "enviat intent DONAM_FILLS");
-                } else if (llistaDadesActivitats.get(pos).isTasca()) {
-                    startActivity(new Intent(LlistaActivitatsActivity.this,
-                            LlistaIntervalsActivity.class));
-                    // en aquesta classe ja es demanara la llista de fills
-                } else {
-                    // no pot ser!
-                    assert false : "activitat que no es projecte ni tasca";
-                }
-            }
-        });
-
-        // Un "long click" serveix per cronometrar, si es tracta d'una tasca.
-        // Si es un projecte, no fara res.
-        arrelListView.setOnItemLongClickListener(new OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(final AdapterView<?> arg0,
-                    final View arg1, final int pos, final long id) {
-                Log.i(tag, "onItemLongClick");
-                Log.d(tag, "pos = " + pos + ", id = " + id);
-
-                if (llistaDadesActivitats.get(pos).isTasca()) {
-                    Intent inte;
-                    if (!llistaDadesActivitats.get(pos).isCronometreEngegat()) {
-                        inte = new Intent(
-                                LlistaActivitatsActivity.ENGEGA_CRONOMETRE);
-                        Log.d(tag, "enviat intent ENGEGA_CRONOMETRE de "
-                                + llistaDadesActivitats.get(pos).getNom());
-                    } else {
-                        inte = new Intent(
-                                LlistaActivitatsActivity.PARA_CRONOMETRE);
-                        Log.d(tag, "enviat intent PARA_CRONOMETRE de "
-                                + llistaDadesActivitats.get(pos).getNom());
-                    }
-                    inte.putExtra("posicio", pos);
-                    sendBroadcast(inte);
-                }
-                // si es un projecte, no fem res
-
-                // Important :
-                // "Programming Android", Z. Mednieks, L. Dornin,
-                // G. Meike, M. Nakamura, O'Reilly 2011, pag. 187:
-                //
-                // If the listener returns false, the event is dispatched
-                // to the View methods as though the handler did not exist.
-                // If, on the other hand, a listener returns true, the event
-                // is said to have been consumed. The View aborts any further
-                // processing for it.
-                //
-                // Si retornem false, l'event long click es tornat a processar
-                // pel listener de click "normal", fent que seguidament a
-                // ordenar el cronometrat passem a veure la llista d'intervals.
-                return true;
-            }
-        });*/
 
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new OneFragment(), "Projectes");
-        adapter.addFragment(new TwoFragment(), "Tasques");
+        adapter.addFragment(new OneFragment(), "Projects");
+        adapter.addFragment(new TwoFragment(), "Tasks");
         viewPager.setAdapter(adapter);
     }
 
@@ -616,6 +534,9 @@ public class LlistaActivitatsActivity extends AppCompatActivity {
         // Handle item selection
 
         switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
             case R.id.action_all:
 
                 return true;
@@ -626,12 +547,6 @@ public class LlistaActivitatsActivity extends AppCompatActivity {
             case R.id.action_intervals:
 
                 return true;
-			/*case R.id.action_details:
-
-				return true;
-			case R.id.action_intervals:
-
-				return true;*/
             case R.id.action_report:
                 Intent intent_r = new Intent(LlistaActivitatsActivity.this, OnCreateReport.class);
                 startActivity(intent_r);

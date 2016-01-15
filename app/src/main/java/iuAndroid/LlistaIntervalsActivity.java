@@ -1,13 +1,16 @@
 package iuAndroid;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -29,14 +32,20 @@ import timetracker.iuandroid.R;
  * @author joans
  * @version 6 febrer 2012
  */
-public class LlistaIntervalsActivity extends Activity {
+public class LlistaIntervalsActivity extends AppCompatActivity {
+
+    private Integer[] imgid={
+            R.drawable.ic_filter_list_grey600_48dp,
+            R.drawable.ic_list_grey600_48dp,
+            R.drawable.ic_keyboard_arrow_right_grey600_48dp
+    };
 
     /**
      * Llista de dades dels intervals de la tasca però havent fet un cast a la
      * classe abstracta <code>List</code> per tal de fer servir aquest atribut
      * conjuntament amb un <code>Adapter</code> d'Android.
      */
-    private List<DadesInterval> llistaDadesIntervals;
+    private ArrayList<DadesInterval> llistaDadesIntervals;
 
     /**
      * Grup de vistes (controls de la interfase gràfica) que consisteix en un
@@ -73,6 +82,8 @@ public class LlistaIntervalsActivity extends Activity {
      */
     private final String tag = this.getClass().getSimpleName();
 
+    private Toolbar toolbar;
+
     /**
      * Estableix com a intervals a visualitzar els de la tasca
      * <code>tascaPare</code>. Aquest mètode és invocat just a l'inici del cicle
@@ -92,12 +103,15 @@ public class LlistaIntervalsActivity extends Activity {
         // Tot aquest mecanisme és anàleg al que trobem al onCreate
         // de LlistaActivitatsActivity.
         setContentView(R.layout.intervals);
-        intervalsListView = (ListView) this.findViewById(R.id.listView2);
+        toolbar = (Toolbar) findViewById(R.id.action_bar_intervals);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        intervalsListView = (ListView) this.findViewById(R.id.listView2);
         llistaDadesIntervals = new ArrayList<DadesInterval>();
-        aaAct = new ArrayAdapter<DadesInterval>(this, layoutID,
-                llistaDadesIntervals);
+        aaAct = new IntervalsListAdapter(this, llistaDadesIntervals,imgid);
         intervalsListView.setAdapter(aaAct);
+
     }
 
     // Aquests són els "serveis" que demana aquesta classe
@@ -296,6 +310,26 @@ public class LlistaIntervalsActivity extends Activity {
         Log.i(tag, "onConfigurationChanged");
         if (Log.isLoggable(tag, Log.VERBOSE)) {
             Log.v(tag, newConfig.toString());
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

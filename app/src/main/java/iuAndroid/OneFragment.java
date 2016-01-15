@@ -35,7 +35,6 @@ public class OneFragment extends Fragment{
         ListView projectlist = (ListView) v.findViewById(R.id.listView8); // Encontramos la vista
 
 
-
         // Un click serveix per navegar per l'arbre de projectes, tasques
         // i intervals. Un long click es per cronometrar una tasca, si és que
         // l'item clicat es una tasca (sinó, no es fa res).

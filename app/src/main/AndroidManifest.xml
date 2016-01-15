@@ -16,7 +16,8 @@
         
         <activity
             android:name="iuAndroid.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.ActionBar.Transparent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" /> 
@@ -37,6 +38,14 @@
         <activity
             android:name="iuAndroid.LlistaIntervalsActivity"
             android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="iuAndroid.OnCreateActivity"
+            android:label="@string/create_activity" >
+        </activity>
+        <activity
+            android:name="iuAndroid.OnCreateReport"
+            android:label="@string/create_report" >
         </activity>
 
         <service

@@ -105,6 +105,43 @@ public class DadesInterval implements Serializable {
         return strdi + " to " + strdf + " TOTAL: " + strdurada;
     }
 
+    public final String duradaToString() {
+
+        /**
+         * Factor de conversió
+         */
+        final long segonsPerHora = 3600;
+
+        /**
+         * Factor de conversió
+         */
+        final long segonsPerMinut = 60;
+
+        long hores = (long) (durada / segonsPerHora);
+        long minuts = (long) ((durada - hores * segonsPerHora)
+                / segonsPerMinut);
+        long segons = (long) (durada - segonsPerHora * hores
+                - segonsPerMinut * minuts);
+        // String strdurada = Long.toString(durada);
+        String strdurada = hores + "h " + minuts + "m " + segons + "s";
+
+
+        return strdurada;
+    }
+
+    public final String iniciToString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy\n" + "hh:mm");
+        String strdi = sdf.format(dataInicial);
+
+        return strdi;
+    }
+    public final String finalToString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy\n" + "hh:mm");
+        String strdf = sdf.format(dataFinal);
+
+        return strdf;
+    }
+
     // Getters
 
     /**

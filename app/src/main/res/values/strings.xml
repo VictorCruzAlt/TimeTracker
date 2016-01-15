@@ -4,8 +4,8 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="clica">clica per començar</string>
-    <string name="one">Projectes</string>
-    <string name="two">Tasques</string>
+    <string name="one">Projects</string>
+    <string name="two">Tasks</string>
     <string name="action_intervals">Intervals</string>
     <string name="action_details">Details</string>
     <string name="action_delete">Delete</string>
@@ -15,4 +15,9 @@
     <string name="delete_message">Are you sure?</string>
     <string name="delete_title">Deleting...</string>
     <string name="start">Start</string>
+    <string name="create_activity">Create Activity</string>
+    <string name="create_report">Create Report</string>
+    <string name="name_activity">Name</string>
+    <string name="desc_activity">Description</string>
+    <string name="itervals_activity">Intervals</string>
 </resources>
